@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SIGAP GAMBUT · Dashboard Pemantauan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#17130f;--pan:#211b15;--pan2:#2a231b;--ink:#f1ebe0;--mute:#a59a88;--line:#3a3127;--acc:#e8833a;--ok:#5fb88a;--warn:#e3b341;--crit:#e5702f;--ext:#d9453d;--wet:#2d6f86;--peat:#4a3524;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark}}
+:root[data-theme="light"]{--bg:#eceee7;--pan:#fbfbf7;--pan2:#f1f2ea;--ink:#1c1a15;--mute:#6b6759;--line:#d6d8cc;--acc:#c2561a;--ok:#2c8a5c;--warn:#b98a0c;--crit:#c2561a;--ext:#bf2f28;--wet:#7fb4c6;--peat:#8a6a4c;color-scheme:light}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eceee7;--pan:#fbfbf7;--pan2:#f1f2ea;--ink:#1c1a15;--mute:#6b6759;--line:#d6d8cc;--acc:#c2561a;--ok:#2c8a5c;--warn:#b98a0c;--crit:#c2561a;--ext:#bf2f28;--wet:#7fb4c6;--peat:#8a6a4c;color-scheme:light}}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Public Sans",system-ui,sans-serif;min-height:100%}
+h1,h2,h3{font-family:"Bricolage Grotesque",Georgia,sans-serif;margin:0;letter-spacing:-.01em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 40px}
+header{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;padding:22px 0 14px}
+.brand h1{font-size:28px;font-weight:800}.brand p{margin:2px 0 0;color:var(--mute);font-size:13px}
+.hr{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sim{border:1px solid var(--warn);color:var(--warn);border-radius:99px;padding:4px 12px;font-size:12.5px;font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+.ic{background:var(--pan);border:1px solid var(--line);border-radius:8px;padding:6px 11px}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:11px 16px;color:var(--mute);font-weight:600;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--acc)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+section[hidden]{display:none}
+.g{display:grid;gap:14px}.k5{grid-template-columns:repeat(5,1fr)}.c2{grid-template-columns:1.35fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:960px){.k5,.c4{grid-template-columns:repeat(2,1fr)}.c2,.c3{grid-template-columns:1fr}}
+.p{background:var(--pan);border:1px solid var(--line);border-radius:12px;padding:18px}
+.p h2{font-size:18px;margin-bottom:4px}.sub{color:var(--mute);font-size:13px;margin:0 0 12px}
+.kpi b{display:block;font:800 32px/1.1 "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--mute);font-size:13px}.kpi i{display:block;font-style:normal;font-size:11.5px;color:var(--mute);margin-top:6px}
+.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+@media(max-width:720px){.zones{grid-template-columns:repeat(2,1fr)}}
+.z{background:var(--pan2);border:1px solid var(--line);border-radius:10px;padding:11px;text-align:left;border-left:4px solid var(--st)}
+.z[aria-pressed=true]{outline:2px solid var(--ink)}
+.z small{color:var(--mute);display:block}.z b{font:700 24px "Bricolage Grotesque";color:var(--st)}
+.bar{height:8px;border-radius:4px;margin:7px 0 3px;position:relative;background:linear-gradient(90deg,var(--ok) 0 25%,var(--warn) 25% 50%,var(--crit) 50% 75%,var(--ext) 75%)}
+.bar u{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:var(--ink);transition:left .5s}
+.ctl{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.ctl label{font-size:13px;color:var(--mute)}input[type=range]{width:220px;accent-color:var(--acc)}
+.tg{display:flex;align-items:center;gap:8px}
+.sw{width:42px;height:24px;border-radius:12px;border:1px solid var(--line);background:var(--pan2);position:relative;padding:0}
+.sw::after{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:var(--mute);transition:all .2s}
+.sw[aria-checked=true]{background:var(--ok)}.sw[aria-checked=true]::after{left:20px;background:#fff}
+svg{display:block;width:100%;height:auto}.ax{fill:var(--mute);font-size:11px}
+.al{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}.al:last-child{border:0}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--st)}
+.lg{display:flex;gap:16px;font-size:12.5px;color:var(--mute);margin-top:6px;flex-wrap:wrap}.lg s{display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:middle;text-decoration:none}
+.lay h3{font-size:16px;margin:6px 0 4px}.lay p{margin:0;color:var(--mute);font-size:13px}.lay .t{font-size:12px;font-weight:600;color:var(--acc)}
+.lay{border-top:3px solid var(--c)}
+.chain{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chain span{background:var(--pan2);border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:12.5px}.chain .me{border-color:var(--acc);color:var(--acc);font-weight:600}
+.big{font:800 44px/1 "Bricolage Grotesque";color:var(--ok)}
+.gantt{display:grid;grid-template-columns:200px repeat(8,1fr);gap:4px;font-size:12.5px;align-items:center}
+.gantt .h{color:var(--mute);text-align:center;font-size:11.5px}.gantt .b{height:18px;border-radius:4px;background:var(--pan2)}.gantt .b.on{background:var(--acc)}
+.bd{display:grid;grid-template-columns:170px 1fr 90px;gap:10px;align-items:center;font-size:13px;margin:7px 0}.bd div i{display:block;height:12px;border-radius:3px;background:var(--acc)}
+.bd em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+footer{color:var(--mute);font-size:12px;margin-top:22px;line-height:1.6}
+@media(max-width:720px){.gantt{grid-template-columns:110px repeat(8,1fr)}.bd{grid-template-columns:110px 1fr 70px}.big{font-size:34px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="brand"><h1>SIGAP GAMBUT</h1><p>Pemantauan risiko smoldering dan kesehatan masyarakat · Kabupaten Banjar, Kalimantan Selatan</p></div>
+ <div class="hr"><span class="sim">Mode simulasi: data sensor bersifat ilustratif</span><button class="ic" id="th" aria-label="Ganti tema">Tema</button></div>
+</header>
+<nav role="tablist" id="nav">
+ <button role="tab" data-t="a" aria-selected="true">Ringkasan</button>
+ <button role="tab" data-t="b" aria-selected="false">Deteksi dini</button>
+ <button role="tab" data-t="c" aria-selected="false">Thermal barrier</button>
+ <button role="tab" data-t="d" aria-selected="false">Dampak kesehatan</button>
+ <button role="tab" data-t="e" aria-selected="false">Rencana dan biaya</button>
+</nav>
+
+<section id="a">
+ <div class="g k5">
+  <div class="p kpi"><b>2.175</b><span>kejadian karhutla di Kalsel</span><i>Januari sampai 29 Agustus 2026, BPBD</i></div>
+  <div class="p kpi"><b>10.635</b><span>hektare area terbakar</span><i>Kalimantan Selatan, 2026</i></div>
+  <div class="p kpi"><b>412</b><span>hotspot di Kabupaten Banjar</span><i>Mei sampai Agustus 2026, WALHI Kalsel</i></div>
+  <div class="p kpi"><b>4.920</b><span>warga Banjar terpapar ISPA</span><i>Agustus 2026, Dinkes Kab. Banjar</i></div>
+  <div class="p kpi"><b>+37,7%</b><span>kenaikan ISPA Banjarmasin</span><i>Tiga pekan, puncak 2.580 kasus di pekan 36</i></div>
+ </div>
+ <div class="g c2" style="margin-top:14px">
+  <div class="p"><h2>Empat lapis, satu sistem</h2><p class="sub">Heat pipe hanya dipasang di area risiko tinggi hasil Layer 1 dan 2. Program melengkapi kebijakan re-wetting, bukan menggantikannya.</p>
+   <div class="g c4" style="grid-template-columns:repeat(2,1fr)">
+    <div class="p lay" style="--c:#5fb88a"><span class="t">Layer 1</span><h3>Pemetaan risiko hidrologi</h3><p>Peat Fire Vulnerability Index dari TMAT, kelembapan, curah hujan, dan suhu udara.</p></div>
+    <div class="p lay" style="--c:#e3b341"><span class="t">Layer 2</span><h3>Deteksi dini</h3><p>Sensor suhu tanah, kelembapan, dan muka air menghasilkan Smoldering Risk Index.</p></div>
+    <div class="p lay" style="--c:#e8833a"><span class="t">Layer 3</span><h3>Thermal barrier</h3><p>Heat pipe pasif dengan sumbu kapiler biochar dari gambut terbakar.</p></div>
+    <div class="p lay" style="--c:#2d8fb0"><span class="t">Layer 4</span><h3>Respons dan surveilans</h3><p>MPA, KTPA, puskesmas, dan sekolah memantau gejala respirasi.</p></div>
+   </div></div>
+  <div class="p"><h2>Rantai sebab ke dampak</h2><p class="sub">Kerangka kausal delapan tahap. Program bekerja di beberapa titik sekaligus.</p>
+   <div class="chain"><span>Hazard: smoldering</span><span>Paparan PM2.5</span><span>Kelompok rentan</span><span class="me">Intervensi SIGAP</span><span>Suhu dan rambatan turun</span><span>PM2.5 dan durasi asap turun</span><span>Gejala dan ISPA turun</span><span>Beban kesehatan turun</span></div>
+   <p class="sub" style="margin-top:14px">Lokasi pilot: Gambut dan Kertak Hanyar (intervensi), Sungai Tabuk (kontrol). Dipilih lewat overlay hotspot, prevalensi ISPA, kedalaman gambut, dan aksesibilitas.</p>
+   <p class="sub">Selaras dengan SDGs 3, 13, 15 dan Asta Cita poin 2 dan 6.</p></div>
+ </div>
+</section>
+
+<section id="b" hidden>
+ <div class="g c2">
+  <div class="p"><h2>Penampang gambut: <span id="zn">Gambut A</span></h2><p class="sub">Geser skenario kemarau dan nyalakan heat pipe untuk melihat bagaimana risiko berubah.</p>
+   <div id="cut"></div>
+   <div class="zones" id="zs"></div>
+   <div class="ctl">
+    <div><label for="sl">Skenario kemarau: <b id="sv">30</b>%</label><br><input id="sl" type="range" min="0" max="100" value="30"></div>
+    <div class="tg"><button class="sw" id="hp" role="switch" aria-checked="true" aria-label="Heat pipe aktif"></button><label for="hp">Heat pipe aktif di zona intervensi</label></div>
+   </div></div>
+  <div class="g" style="align-content:start">
+   <div class="p"><h2>Peringatan dini</h2><p class="sub">Status SRI: Aman 0 sampai 75, Waspada 75 sampai 150, Kritis 150 sampai 225, Ekstrem 225 sampai 300.</p><div id="al"></div></div>
+   <div class="p"><h2>Pembacaan sensor</h2><p class="sub">Diperbarui setiap 3 detik (simulasi).</p><div id="rd"></div>
+    <p class="sub" style="margin-top:10px">Rumus SRI di sini ilustratif. Versi final dikalibrasi dengan PFVI pada tahun pertama.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="c" hidden>
+ <div class="g c2">
+  <div class="p"><h2>Suhu puncak smoldering</h2><p class="sub">Simulasi 48 jam pada kolom gambut uji, dengan dan tanpa heat pipe.</p><div id="ch1"></div>
+   <div class="lg"><span><s style="background:var(--ext)"></s>Tanpa heat pipe</span><span><s style="background:var(--ok)"></s>Dengan heat pipe</span></div></div>
+  <div class="g" style="align-content:start">
+   <div class="p"><h2>Target kinerja</h2><div class="g c3" style="margin-top:10px">
+    <div><div class="big">30%</div><span class="sub">penurunan suhu puncak</span></div>
+    <div><div class="big">8 cm</div><span class="sub">zona aman minimal</span></div>
+    <div><div class="big">200%</div><span class="sub">kadar air zona aman, dry basis</span></div></div></div>
+   <div class="p"><h2>Cara kerja</h2><p class="sub">Panas bara diserap evaporator, fluida menguap, mengembun di kondensor, lalu panas dilepas ke gambut lembap. Cairan kembali lewat sumbu biochar. Tidak butuh listrik atau pompa.</p>
+    <div class="chain"><span>Bara bawah tanah</span><span>Evaporator</span><span>Uap naik</span><span>Kondensor</span><span>Heat sink gambut lembap</span><span>Cairan kembali via biochar</span></div></div>
+   <div class="p"><h2>Spesifikasi uji</h2><p class="sub">Tabung tembaga atau stainless steel, diameter 10 sampai 15 mm. Sumbu biochar berporositas 70 sampai 85 persen. Empat varian panjang 50 sampai 200 cm sesuai kedalaman gambut.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="d" hidden>
+ <div class="g c2">
+  <div class="p"><h2>Kunjungan ISPA per pekan</h2><p class="sub">Simulasi desain before-after control impact. Garis putus-putus menandai mulai beroperasinya heat pipe.</p><div id="ch2"></div>
+   <div class="lg"><span><s style="background:var(--acc)"></s>Intervensi (Gambut, Kertak Hanyar)</span><span><s style="background:var(--mute)"></s>Kontrol (Sungai Tabuk)</span></div></div>
+  <div class="g" style="align-content:start">
+   <div class="p"><h2>Efek bersih (difference-in-differences)</h2><p class="sub">Dihitung langsung dari data simulasi di samping.</p><div class="big" id="did">-</div><p class="sub" id="didt" style="margin-top:8px"></p></div>
+   <div class="p"><h2>Indikator kesehatan yang dipantau</h2>
+    <div class="al"><span class="dot" style="--st:var(--acc)"></span><span>Konsentrasi PM2.5 harian di desa intervensi dan kontrol</span></div>
+    <div class="al"><span class="dot" style="--st:var(--acc)"></span><span>Kunjungan ISPA di puskesmas menurut kelompok usia: balita, anak, dewasa, lansia</span></div>
+    <div class="al"><span class="dot" style="--st:var(--acc)"></span><span>Ketidakhadiran siswa sekolah dasar akibat sakit</span></div></div>
+  </div>
+ </div>
+</section>
+
+<section id="e" hidden>
+ <div class="g c2">
+  <div class="p"><h2>Jadwal pilot dua tahun</h2><p class="sub">Tahun I menyiapkan dan memasang sensor, Tahun II memasang heat pipe dan mengevaluasi.</p><div class="gantt" id="gt"></div></div>
+  <div class="p"><h2>Anggaran Rp250 juta</h2><p class="sub">Sekitar 1,52 persen dari alokasi anggaran Pemprov Kalsel untuk karhutla dan restorasi gambut.</p><div id="bd"></div></div>
+ </div>
+ <div class="p" style="margin-top:14px"><h2>Mitra pelaksana</h2><p class="sub" style="margin:0">BPGMN, Dinas Pertanian Kab. Banjar dengan 32 Kelompok Tani Peduli Api, Dinas Kesehatan dan puskesmas, BMKG, Universitas Lambung Mangkurat, peneliti PFVI (IPB dan ITB), University of Nottingham, perusahaan dan startup teknologi, serta media lokal.</p></div>
+</section>
+
+<footer>Angka kejadian, hotspot, ISPA, jadwal, dan anggaran bersumber dari naskah gagasan kreatif (BPBD Kalsel, WALHI Kalsel, Dinkes, Antara News, RRI). Data sensor, suhu, dan tren ISPA pada dashboard ini adalah simulasi untuk mendemonstrasikan konsep dan belum merupakan hasil lapangan.<br>Habibah Sai’dah · Program Studi Kesehatan Masyarakat, Universitas Lambung Mangkurat · PILMAKESMASPRES AIPTKMI 2026</footer>
+</div>
+
+<script>
+var $=function(s){return document.querySelector(s)};
+var tabs=document.querySelectorAll('#nav button'),secs=document.querySelectorAll('section');
+tabs.forEach(function(b){b.onclick=function(){tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});secs.forEach(function(s){s.hidden=s.id!==b.dataset.t});if(b.dataset.t==='b')draw()}});
+$('#th').onclick=function(){var r=document.documentElement,l=matchMedia('(prefers-color-scheme:light)').matches,c=r.dataset.theme||(l?'light':'dark');r.dataset.theme=c==='dark'?'light':'dark'};
+var cl=function(v){return Math.max(0,Math.min(1,v))};
+var Z=[{n:'Gambut A',b:[34,62,28],i:1,j:0},{n:'Gambut B',b:[37,55,35],i:1,j:2},{n:'Kertak Hanyar',b:[33,66,24],i:1,j:4},{n:'Kontrol (Sungai Tabuk)',b:[36,58,33],i:0,j:1}];
+var S=30,HP=true,SEL=0,tick=0;
+function val(z){var s=S/100,wob=Math.sin(tick/2+z.j)*.8,t=z.b[0]+s*35+wob,m=z.b[1]-s*40+wob,g=z.b[2]+s*60+wob;
+ if(HP&&z.i)t=t-.3*(t-28);
+ var r=300*(.4*cl((t-28)/42)+.3*cl(1-m/100)+.3*cl((g-10)/80));return{t:t,m:m,g:g,r:r}}
+function st(r){return r<75?['Aman','var(--ok)']:r<150?['Waspada','var(--warn)']:r<225?['Kritis','var(--crit)']:['Ekstrem','var(--ext)']}
+function act(s){return s==='Aman'?'Pemantauan rutin oleh KTPA.':s==='Waspada'?'MPA patroli harian, siapkan pembasahan.':s==='Kritis'?'Aktifkan respons MPA dan beri tahu puskesmas serta sekolah.':'Respons darurat, pembasahan, dan imbauan masker untuk kelompok rentan.'}
+function cut(z,v){var wt=50+v.g*1.6,e=cl(v.r/300),h='<svg viewBox="0 0 640 260" role="img" aria-label="Penampang lapisan gambut"><defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--peat)"/><stop offset="1" stop-color="var(--pan2)"/></linearGradient><radialGradient id="em"><stop offset="0" stop-color="#ffb347"/><stop offset="1" stop-color="#d9453d" stop-opacity="0"/></radialGradient></defs>';
+ h+='<rect x="0" y="50" width="640" height="210" fill="url(#gp)"/><rect x="0" y="'+wt+'" width="640" height="'+(260-wt)+'" fill="var(--wet)" opacity=".55"/><line x1="0" x2="640" y1="'+wt+'" y2="'+wt+'" stroke="var(--wet)" stroke-width="2" stroke-dasharray="6 5"/>';
+ h+='<text x="10" y="'+(wt-6)+'" class="ax">Muka air tanah: '+Math.round(v.g)+' cm</text><rect x="0" y="0" width="640" height="50" fill="var(--bg)"/><path d="M0 50h640" stroke="var(--ok)" stroke-width="3"/>';
+ for(var k=0;k<14;k++)h+='<path d="M'+(25+k*46)+' 50v-'+(10+(k*7)%12)+'" stroke="var(--ok)" stroke-width="2"/>';
+ if(HP&&z.i)[150,320,490].forEach(function(x){h+='<rect x="'+x+'" y="52" width="9" height="'+(wt-42)+'" rx="3" fill="var(--mute)" stroke="var(--ink)"/><rect x="'+(x-5)+'" y="'+(wt-12)+'" width="19" height="14" rx="3" fill="var(--acc)"/>'});
+ [110,240,400,540].forEach(function(x,i){var y=Math.min(wt-14,200)-i%2*10,r=8+e*26;h+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="url(#em)" opacity="'+(.15+e*.85)+'"/>'});
+ h+='<text x="630" y="22" text-anchor="end" class="ax">Permukaan tanah</text></svg>';return h}
+function draw(){var h='',a='',rd='';
+ Z.forEach(function(z,i){var v=val(z),s=st(v.r);
+  h+='<button class="z" style="--st:'+s[1]+'" aria-pressed="'+(i===SEL)+'" data-i="'+i+'"><small>'+z.n+'</small><b>'+Math.round(v.r)+'</b> <span style="color:var(--mute)">'+s[0]+'</span><div class="bar"><u style="left:calc('+(v.r/3)+'% - 2px)"></u></div></button>';
+  if(s[0]!=='Aman'&&z.i)a+='<div class="al"><span class="dot" style="--st:'+s[1]+'"></span><span><b>'+z.n+'</b> berstatus '+s[0]+'. '+act(s[0])+'</span></div>';
+  rd+='<div class="bd" style="grid-template-columns:1.2fr 1fr 1fr 1fr;font-size:12.5px"><span>'+z.n.split(' (')[0]+'</span><span>'+v.t.toFixed(1)+' °C</span><span>'+v.m.toFixed(0)+'% lembap</span><span>'+v.g.toFixed(0)+' cm</span></div>'});
+ $('#zs').innerHTML=h;$('#al').innerHTML=a||'<div class="al"><span class="dot" style="--st:var(--ok)"></span><span>Semua zona intervensi berstatus Aman.</span></div>';
+ $('#rd').innerHTML='<div class="bd" style="grid-template-columns:1.2fr 1fr 1fr 1fr;color:var(--mute);font-size:12px"><span>Zona</span><span>Suhu tanah</span><span>Kelembapan</span><span>TMAT</span></div>'+rd;
+ var z=Z[SEL];$('#zn').textContent=z.n;$('#cut').innerHTML=cut(z,val(z));
+ document.querySelectorAll('.z').forEach(function(b){b.onclick=function(){SEL=+b.dataset.i;draw()}})}
+$('#sl').oninput=function(){S=+this.value;$('#sv').textContent=S;draw()};
+$('#hp').onclick=function(){HP=!HP;this.setAttribute('aria-checked',HP);draw()};
+setInterval(function(){tick++;if(!$('#b').hidden)draw()},3000);
+function lc(id,ser,o){var W=640,H=270,p={l:44,r:12,t:14,b:30},n=ser[0].d.length;
+ var X=function(i){return p.l+i*(W-p.l-p.r)/(n-1)},Y=function(v){return H-p.b-v/o.max*(H-p.t-p.b)},g='';
+ for(var k=0;k<=4;k++){var v=o.max*k/4;g+='<line x1="'+p.l+'" x2="'+(W-p.r)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="var(--line)"/><text x="'+(p.l-7)+'" y="'+(Y(v)+4)+'" text-anchor="end" class="ax">'+Math.round(v)+'</text>'}
+ for(var i=0;i<n;i+=o.step)g+='<text x="'+X(i)+'" y="'+(H-9)+'" text-anchor="middle" class="ax">'+o.lab(i)+'</text>';
+ if(o.mark!=null)g+='<line x1="'+X(o.mark)+'" x2="'+X(o.mark)+'" y1="'+p.t+'" y2="'+(H-p.b)+'" stroke="var(--mute)" stroke-dasharray="4 4"/><text x="'+(X(o.mark)+6)+'" y="'+(p.t+10)+'" class="ax">'+o.ml+'</text>';
+ ser.forEach(function(s){g+='<path d="'+s.d.map(function(v,i){return(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)}).join('')+'" fill="none" stroke="'+s.c+'" stroke-width="2.6" stroke-linejoin="round"/>'});
+ g+='<text x="'+p.l+'" y="10" class="ax">'+o.y+'</text>';
+ $(id).innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+o.al+'">'+g+'</svg>'}
+var a=[],b=[];for(var t=0;t<=48;t++){a.push(28+(420-28)*(1-Math.exp(-t/9)));b.push(28+(294-28)*(1-Math.exp(-t/9)))}
+lc('#ch1',[{d:a,c:'var(--ext)'},{d:b,c:'var(--ok)'}],{max:500,step:8,lab:function(i){return i+' j'},y:'Suhu (°C)',al:'Grafik suhu smoldering dengan dan tanpa heat pipe'});
+var I=[],C=[],pre=[0,0],post=[0,0],W=24;
+for(var w=1;w<=W;w++){var se=Math.exp(-Math.pow(w-17,2)/40)*220,nz=((w*37)%11-5)*3,ci=150+se+nz,ii=145+se*(w>=12?.62:1)-nz*.6;C.push(ci);I.push(ii);var q=w>=12?post:pre;q[0]+=ii;q[1]+=ci}
+lc('#ch2',[{d:C,c:'var(--mute)'},{d:I,c:'var(--acc)'}],{max:400,step:3,lab:function(i){return 'P'+(i+1)},mark:11,ml:'Heat pipe aktif',y:'Kunjungan ISPA',al:'Grafik kunjungan ISPA intervensi dan kontrol'});
+var np=11,nq=13,di=(post[0]/nq-pre[0]/np)-(post[1]/nq-pre[1]/np),rel=di/(pre[0]/np)*100;
+$('#did').textContent=Math.round(di)+' kasus/pekan';$('#didt').textContent='Penurunan bersih sekitar '+Math.abs(rel).toFixed(0)+'% dibanding rata-rata sebelum intervensi, setelah memperhitungkan tren di kecamatan kontrol.';
+var G=[['Persiapan dan perencanaan',0,1],['Produksi biochar, optimasi desain',1,3],['Baseline dan pemasangan sensor',2,3],['Konstruksi dan pasang heat pipe',4,5],['Operasional dan midline',5,6],['Endline, evaluasi, replikasi',6,7]],gt='<span></span>';
+['T1','T2','T3','T4','T1','T2','T3','T4'].forEach(function(q,i){gt+='<span class="h">'+(i===0?'Thn I ':i===4?'Thn II ':'')+q+'</span>'});
+G.forEach(function(r){gt+='<span>'+r[0]+'</span>';for(var i=0;i<8;i++)gt+='<span class="b'+(i>=r[1]&&i<=r[2]?' on':'')+'"></span>'});
+$('#gt').innerHTML=gt;
+var B=[['Persiapan dan baseline',40],['Biochar dan desain heat pipe',50],['Sensor dan deteksi dini',45],['Pemasangan heat pipe',60],['Operasional dan surveilans',35],['Evaluasi dan replikasi',20]],bd='';
+B.forEach(function(r){bd+='<div class="bd"><span>'+r[0]+'</span><div><i style="width:'+r[1]/60*100+'%"></i></div><em>Rp'+r[1]+' jt</em></div>'});
+$('#bd').innerHTML=bd;
+draw();
+</script>
+</body>
+</html>
